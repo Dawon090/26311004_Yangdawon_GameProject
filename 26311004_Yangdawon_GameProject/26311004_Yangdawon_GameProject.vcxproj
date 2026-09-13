@@ -125,8 +125,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="CApplication.cpp" />
+    <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="SceneGameBegin.cpp" />
+    <ClCompile Include="SceneGamePlay.cpp" />
+    <ClCompile Include="SceneGameResult.cpp" />
     <ClCompile Include="_main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -134,8 +137,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CApplication.h" />
+    <ClInclude Include="Enemy.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="SceneGameBegin.h" />
+    <ClInclude Include="SceneGamePlay.h" />
+    <ClInclude Include="SceneGameResult.h" />
     <ClInclude Include="TexturePath.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

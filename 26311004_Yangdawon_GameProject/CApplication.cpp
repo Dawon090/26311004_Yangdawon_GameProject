@@ -1,6 +1,7 @@
 #include "CApplication.h"
 #include "glc2d.h"
-#include "Player.h"
+
+#include "stdio.h"
 
 TextureList texture;
 extern CApplication g_app;
@@ -22,10 +23,7 @@ int CApplication::Init()
 	g2_SetFrameMove(AppUpdate);
 	g2_SetRender(AppRender);
 
-	g2_CreateWin(100, 25, screenWidth, screenHeight, "ENDURE");
-
-	g2_SetStateShow(true);
-	g2_SetCursorShow(true);
+	g2_CreateWin(100, 25, screenWidth, screenHeight, "STRIKE");
 
 	sceneBegin.Init();
 
@@ -34,22 +32,89 @@ int CApplication::Init()
 
 int CApplication::Update()
 {
-	sceneBegin.Update();
+	ChangeUpdate();
 
 	return 0;
 }
 
 int CApplication::Render()
 {
-	sceneBegin.Render();
+	ChangeRender();
 
 	return 0;
 }
 
 int CApplication::Destroy()
 {
-	sceneBegin.Destroy();
-
 	g2_DestroyWin();
 	return 0;
+}
+
+void CApplication::ChangeScene(ScreenState nextScene)
+{
+	if (currentScene == nextScene)
+		return;
+
+	currentScene = nextScene;
+
+	switch (currentScene)
+	{
+		case(MAINMENU):
+		{
+			sceneBegin.Init();
+			sceneBegin.Update(*this);
+		}break;
+
+		case(GAMEPLAY):
+		{
+			scenePlay.Init();
+			scenePlay.Update(*this);
+		}break;
+
+		case(GAMEOVER):
+		{
+			sceneResult.Init();
+			sceneResult.Update(*this);
+		}break;
+	}
+}
+
+void CApplication::ChangeUpdate()
+{
+	switch (currentScene)
+	{
+	case(MAINMENU):
+		sceneBegin.Update(*this);
+		break;
+	case(GAMEPLAY):
+		if (texture.mainTexture != NULL)
+			sceneBegin.Destroy();
+		scenePlay.Update(*this);
+		break;
+	case(GAMEOVER):
+		if (texture.cursorTexture != NULL || texture.backgroundTexture != NULL)
+			scenePlay.Destroy();
+		sceneResult.Update(*this);
+		break;
+	}
+}
+void CApplication::ChangeRender()
+{
+	switch (currentScene)
+	{
+	case(MAINMENU):
+		sceneBegin.Render();
+		break;
+	case(GAMEPLAY):
+		scenePlay.Render();
+		break;
+	case(GAMEOVER):
+		sceneResult.Render();
+		break;
+	}
+}
+
+ScreenState CApplication::GetScene() const
+{
+	return currentScene;
 }

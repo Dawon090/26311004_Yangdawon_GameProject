@@ -1,7 +1,7 @@
 #pragma once
-#include "Player.h"
 #include "SceneGameBegin.h"
-
+#include "SceneGamePlay.h"
+#include "SceneGameResult.h"
 
 enum ScreenState
 {
@@ -10,11 +10,18 @@ enum ScreenState
 	GAMEOVER
 };
 
+
 struct TextureList
 {
 	int mainTexture = -1;
 	int backgroundTexture = -1;
-	int playerTexture = -1;
+	int gaugeTexture = -1;
+	int cursorTexture = -1;
+
+	int slimeTexture = -1;
+	int goblinTexture = -1;
+	int orcTexture = -1;
+	int dragonTexture = -1;
 };
 extern TextureList texture;
 
@@ -26,13 +33,22 @@ public:
 	int Render();
 	int Destroy();
 
+	void ChangeScene(ScreenState nextScene);
+	void ChangeUpdate();
+	void ChangeRender();
+
+	ScreenState GetScene() const;
+
 protected:
 	static constexpr int screenWidth = 1280;
 	static constexpr int screenHeight = 720;
 
-	SceneGameBegin sceneBegin;
+	SceneGameBegin  sceneBegin;
+	SceneGamePlay   scenePlay;
+	SceneGameResult sceneResult;
 
 private:
-	Player player;
+	ScreenState currentScene = MAINMENU;
+
 };
 
