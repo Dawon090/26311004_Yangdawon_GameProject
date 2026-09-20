@@ -9,3 +9,10 @@
 
 #define TX_CURSOR		"texture/Emage/cursor.png"
 #define TX_GAUGE		"texture/Emage/gauge.png"
+
+#define VFX_ATTACK		"texture/Sound/attack.mp3"
+#define VFX_BGM			"texture/Sound/battle.mp3"
+#define VFX_TAKEDAMAGE	"texture/Sound/damage.mp3"
+#define VFX_LOSE		"texture/Sound/game_lose.mp3"
+#define VFX_WIN			"texture/Sound/game_win.mp3"
+#define VFX_START		"texture/Sound/start.mp3"

@@ -14,6 +14,7 @@ public:
 	int GetMaxHP() const;
 	int GetAttack() const;
 	bool Die();
+	void SetHP(int max);
 
 	const VEC2 gaugePosition{ 290.0f,640.0f };
 	VEC2 cursorPosition{ 290.0f,606.0f };

@@ -10,7 +10,6 @@ enum ScreenState
 	GAMEOVER
 };
 
-
 struct TextureList
 {
 	int mainTexture = -1;
@@ -22,6 +21,13 @@ struct TextureList
 	int goblinTexture = -1;
 	int orcTexture = -1;
 	int dragonTexture = -1;
+
+	int attackSound = -1;
+	int battleSound = -1;
+	int damageSound = -1;
+	int loseSound = -1;
+	int winSound = -1;
+	int startSound = -1;
 };
 extern TextureList texture;
 
@@ -38,6 +44,8 @@ public:
 	void ChangeRender();
 
 	ScreenState GetScene() const;
+	void Outcome(bool rel);
+	bool InputMouse(RECT button);
 
 protected:
 	static constexpr int screenWidth = 1280;
@@ -49,6 +57,7 @@ protected:
 
 private:
 	ScreenState currentScene = MAINMENU;
+	
 
 };
 

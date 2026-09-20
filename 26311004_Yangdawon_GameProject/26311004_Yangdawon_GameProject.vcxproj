@@ -138,6 +138,7 @@
   <ItemGroup>
     <ClInclude Include="CApplication.h" />
     <ClInclude Include="Enemy.h" />
+    <ClInclude Include="GameResult.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="SceneGameBegin.h" />
     <ClInclude Include="SceneGamePlay.h" />

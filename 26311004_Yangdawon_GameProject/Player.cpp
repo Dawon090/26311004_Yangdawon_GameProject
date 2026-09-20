@@ -92,3 +92,8 @@ void Player::RangeCheck(float x)
 	else if (PerfectRange(x))
 		attack = 5;	
 }
+void Player::SetHP(int max)
+{
+	maxHp = max;
+	currentHp = maxHp;
+}

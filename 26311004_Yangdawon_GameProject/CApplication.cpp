@@ -24,6 +24,7 @@ int CApplication::Init()
 	g2_SetRender(AppRender);
 
 	g2_CreateWin(100, 25, screenWidth, screenHeight, "STRIKE");
+	g2_SetClearColor(0xFF000000);
 
 	sceneBegin.Init();
 
@@ -46,6 +47,7 @@ int CApplication::Render()
 
 int CApplication::Destroy()
 {
+	sceneResult.Destroy();
 	g2_DestroyWin();
 	return 0;
 }
@@ -117,4 +119,24 @@ void CApplication::ChangeRender()
 ScreenState CApplication::GetScene() const
 {
 	return currentScene;
+}
+
+void CApplication::Outcome(bool rel)
+{
+	sceneResult.SetOutcome(rel);
+	return;
+}
+bool CApplication::InputMouse(RECT button)
+{
+	if (g2_GetMouseEvent(0) == EINPUT_DOWN)
+	{
+		int mouseX = g2_GetMouseX();
+		int mouseY = g2_GetMouseY();
+
+		if (mouseX >= button.left && mouseX <= button.right && mouseY >= button.top && mouseY <= button.bottom)
+		{
+			return TRUE;
+		}
+	}
+	return FALSE;
 }
