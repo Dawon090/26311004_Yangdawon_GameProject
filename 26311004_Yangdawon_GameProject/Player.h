@@ -40,7 +40,7 @@ private:
 
 	float cursorX = 290.0f;
 	int cursorDirection = 1;
-	float cursorSpeed = 0.5;
+	float cursorSpeed = 0.2;
 	float move{};
 };
 

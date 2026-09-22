@@ -40,6 +40,27 @@ int SceneGamePlay::Update(CApplication& cApp)
 	}
 
 	//전투
+	//
+
+	// ESC
+	if (_isInputEsc)
+	{
+		if (cApp.InputMouse(gameReplayPos) == TRUE)
+		{
+			g2_SoundPlay(texture.startSound);
+			if (!g2_SoundIsPlaying(texture.startSound))
+			{
+				// 효과음 종료 후 씬 전환
+				printf("%d\n", cApp.GetScene());
+				cApp.ChangeScene(GAMEPLAY);
+				printf("씬변경, %d\n", cApp.GetScene());
+			}
+		}
+		else if (cApp.InputMouse(gameExitPos) == TRUE)
+			cApp.Destroy();
+
+	}
+
 	return 0;
 }
 int SceneGamePlay::Render()
@@ -57,7 +78,18 @@ int SceneGamePlay::Render()
 	//hp바 표시
 	g2_FontDrawText(hpBar, playerHp, 0xFFFFFFFF, "HP : %d", player->GetHP());
 	g2_FontDrawText(hpBar, enemyHp, 0xFFFFFFFF, "%d / %d", enemy->GetHp(), enemy->GetMaxHp());
-	//printf("%d |", texture.backgroundTexture);
+	
+	// 나가기
+	if (pKeyboard[VK_ESC] == EINPUT_DOWN)
+	{
+		printf("그리기");
+		_isInputEsc = true;
+		//검은 창
+		//다시시작
+		g2_FontDrawText(escButton, gameReplayPos, 0xFFFFFFFF, "다시 하기");
+		//게임 종료
+		g2_FontDrawText(escButton, gameExitPos, 0xFFFFFFFF, "게임 종료");
+	}
 
 	return 0;
 }
@@ -82,7 +114,6 @@ int SceneGamePlay::Destroy()
 
 bool SceneGamePlay::InputSpace()
 {
-	const KEYCODE* pKeyboard = g2_GetKeyboard();
 	if (pKeyboard[VK_SPACE] == EINPUT_DOWN)
 	{
 		printf("키보드 입력");
@@ -142,6 +173,7 @@ void SceneGamePlay::TextureLoad()
 	//문자열
 	hpBar = g2_FontCreate("굴림", 50, 0);
 	attackFont = g2_FontCreate("굴림", 70, 1);
+	escButton = g2_FontCreate("굴림", 50, 0);
 
 	//사운드
 	texture.battleSound = g2_SoundLoad(VFX_BGM);

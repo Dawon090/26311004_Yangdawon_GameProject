@@ -17,7 +17,10 @@ private:
 	static constexpr int startBottom = 500;
 
 	int startButton = -1;
-	RECT startPos{ 580,400,730,460 };
+	RECT startPos{ 580,400,700,460 };
+
+	int exitButton = -1;
+	RECT exitPos{ 580,475,700,535 };
 
 };
 
