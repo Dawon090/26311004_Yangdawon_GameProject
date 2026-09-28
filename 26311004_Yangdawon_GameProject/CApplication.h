@@ -16,6 +16,7 @@ struct TextureList
 	int backgroundTexture = -1;
 	int gaugeTexture = -1;
 	int cursorTexture = -1;
+	int escwindowTexture = -1;
 
 	int slimeTexture = -1;
 	int goblinTexture = -1;

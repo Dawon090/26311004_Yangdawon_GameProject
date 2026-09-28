@@ -40,7 +40,7 @@ int SceneGameBegin::Render()
 	g2_Draw2D(texture.mainTexture, nullptr);
 		
 	g2_FontDrawText(startButton, startPos, 0xFFFFFFFF, "Start");
-	g2_FontDrawText(exitButton, exitPos, 0xFFFFFFFF, "Start");
+	g2_FontDrawText(exitButton, exitPos, 0xFFFFFFFF, "Exit");
 
 	return 0;
 }
@@ -48,6 +48,7 @@ int SceneGameBegin::Render()
 int SceneGameBegin::Destroy()
 {
 	g2_TextureRelease(texture.mainTexture);
+	g2_SoundRelease(texture.startSound);
 
 	return 0;
 }

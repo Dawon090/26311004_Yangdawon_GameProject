@@ -9,6 +9,7 @@
 
 #define TX_CURSOR		"texture/Emage/cursor.png"
 #define TX_GAUGE		"texture/Emage/gauge.png"
+#define TX_ESC			"texture/Emage/escWindow"
 
 #define VFX_ATTACK		"texture/Sound/attack.mp3"
 #define VFX_BGM			"texture/Sound/battle.mp3"

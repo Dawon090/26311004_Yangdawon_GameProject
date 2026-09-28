@@ -34,9 +34,10 @@ private:
 	RECT damagePos{ 720,320,820,365 };
 
 	int escButton = -1;
-	const KEYCODE* pKeyboard = g2_GetKeyboard();
+	const KEYCODE* pKeyboard = nullptr;
 	//게임종료, 다시시작, 마저하기
-	RECT gameExitPos{ 570,350,750,400 };
-	RECT gameReplayPos{ 570,290,750,340 };
+	RECT gameExitPos{ 540,350,760,400 };
+	RECT gameReplayPos{ 540,290,760,340 };
+	RECT escScreen{ 290,180,990,520 };
 	bool _isInputEsc = false;
 };

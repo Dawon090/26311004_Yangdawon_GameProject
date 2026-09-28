@@ -12,6 +12,7 @@ int SceneGameResult::Init()
 
 	texture.loseSound = g2_SoundLoad(VFX_LOSE);
 	texture.winSound = g2_SoundLoad(VFX_WIN);
+	texture.startSound = g2_SoundLoad(VFX_START);
 	_isPlayed = false;
 	return 0;
 }
@@ -58,6 +59,9 @@ int SceneGameResult::Render()
 
 int SceneGameResult::Destroy()
 {
+	g2_TextureRelease(texture.winSound);
+	g2_TextureRelease(texture.loseSound);
+	g2_TextureRelease(texture.startSound);
 	return 0;
 }
 

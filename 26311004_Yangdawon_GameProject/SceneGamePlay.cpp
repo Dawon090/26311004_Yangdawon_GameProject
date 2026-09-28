@@ -12,6 +12,7 @@ int SceneGamePlay::Init()
 {
 	player = new Player();
 	enemy = new Slime();
+	pKeyboard = g2_GetKeyboard();
 	printf("생성됨");
 	TextureLoad();
 
@@ -19,6 +20,41 @@ int SceneGamePlay::Init()
 }
 int SceneGamePlay::Update(CApplication& cApp)
 {
+	// ESC
+	if (pKeyboard[VK_ESCAPE] == EINPUT_DOWN)
+	{
+		_isInputEsc = !_isInputEsc;
+	}
+
+	if (_isInputEsc)
+	{
+		if(g2_GetMouseEvent(0) == EINPUT_DOWN)
+			printf("Mouse: %d, %d \n", g2_GetMouseX(), g2_GetMouseY());
+		if (cApp.InputMouse(gameReplayPos) == TRUE)
+		{
+			printf("재시작 선택\n");
+			g2_SoundPlay(texture.startSound);
+			if (!g2_SoundIsPlaying(texture.startSound))
+			{
+				printf("효과음 종료, 씬 전환 시도\n");
+				// 효과음 종료 후 씬 전환
+				Destroy();
+				Init();
+				_isInputEsc = false;
+			}
+		}
+		else if (cApp.InputMouse(gameExitPos) == TRUE)
+		{
+			printf("게임종료 선택");
+			cApp.Destroy();
+			return 0;
+		}
+
+		return 0;
+	}
+
+
+
 	if (!g2_SoundIsPlaying(texture.battleSound))
 		g2_SoundPlay(texture.battleSound);
 	//커서이동
@@ -42,24 +78,7 @@ int SceneGamePlay::Update(CApplication& cApp)
 	//전투
 	//
 
-	// ESC
-	if (_isInputEsc)
-	{
-		if (cApp.InputMouse(gameReplayPos) == TRUE)
-		{
-			g2_SoundPlay(texture.startSound);
-			if (!g2_SoundIsPlaying(texture.startSound))
-			{
-				// 효과음 종료 후 씬 전환
-				printf("%d\n", cApp.GetScene());
-				cApp.ChangeScene(GAMEPLAY);
-				printf("씬변경, %d\n", cApp.GetScene());
-			}
-		}
-		else if (cApp.InputMouse(gameExitPos) == TRUE)
-			cApp.Destroy();
-
-	}
+	
 
 	return 0;
 }
@@ -80,11 +99,10 @@ int SceneGamePlay::Render()
 	g2_FontDrawText(hpBar, enemyHp, 0xFFFFFFFF, "%d / %d", enemy->GetHp(), enemy->GetMaxHp());
 	
 	// 나가기
-	if (pKeyboard[VK_ESC] == EINPUT_DOWN)
-	{
-		printf("그리기");
-		_isInputEsc = true;
+	if (_isInputEsc)
+	{		
 		//검은 창
+		g2_Draw2D(texture.escwindowTexture, NULL, &escScreen);
 		//다시시작
 		g2_FontDrawText(escButton, gameReplayPos, 0xFFFFFFFF, "다시 하기");
 		//게임 종료
@@ -164,6 +182,7 @@ void SceneGamePlay::TextureLoad()
 	texture.backgroundTexture = g2_TextureLoad(TX_BACKGROUND);
 	texture.gaugeTexture = g2_TextureLoad(TX_GAUGE);
 	texture.cursorTexture = g2_TextureLoad(TX_CURSOR);
+	texture.escwindowTexture = g2_TextureLoad(TX_ESC);
 
 	texture.slimeTexture = g2_TextureLoad(TX_SLIME);
 	texture.goblinTexture = g2_TextureLoad(TX_GOBLIN);
@@ -176,6 +195,7 @@ void SceneGamePlay::TextureLoad()
 	escButton = g2_FontCreate("굴림", 50, 0);
 
 	//사운드
+	texture.startSound = g2_SoundLoad(VFX_START);
 	texture.battleSound = g2_SoundLoad(VFX_BGM);
 	texture.attackSound = g2_SoundLoad(VFX_ATTACK);
 	texture.damageSound = g2_SoundLoad(VFX_TAKEDAMAGE);
@@ -185,9 +205,15 @@ void SceneGamePlay::TextureRelease()
 	g2_TextureRelease(texture.backgroundTexture);
 	g2_TextureRelease(texture.gaugeTexture);
 	g2_TextureRelease(texture.cursorTexture);
+	g2_TextureRelease(texture.escwindowTexture);
 
 	g2_TextureRelease(texture.slimeTexture);
 	g2_TextureRelease(texture.goblinTexture);
 	g2_TextureRelease(texture.orcTexture);
 	g2_TextureRelease(texture.dragonTexture);
+
+	g2_SoundRelease(texture.startSound);
+	g2_SoundRelease(texture.battleSound);
+	g2_SoundRelease(texture.attackSound);
+	g2_SoundRelease(texture.damageSound);
 }
