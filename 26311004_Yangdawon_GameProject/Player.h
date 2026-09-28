@@ -15,16 +15,20 @@ public:
 	int GetAttack() const;
 	bool Die();
 	void SetHP(int max);
+	void SetSpeed(float speed);
 
 	const VEC2 gaugePosition{ 290.0f,640.0f };
 	VEC2 cursorPosition{ 290.0f,606.0f };
 
 	// 커서 이동 함수
-	void CursorMOve();
+	void CursorMOve(float _dt);
+
+	void DeltaTime();
+	float GetDeltaTime() const;
 
 private:
-	int currentHp = 5;
-	int maxHp = 5;
+	int currentHp = 3;
+	int maxHp = 3;
 	int attack{};
 	bool isDead = false;
 
@@ -40,7 +44,10 @@ private:
 
 	float cursorX = 290.0f;
 	int cursorDirection = 1;
-	float cursorSpeed = 0.2;
+	float cursorSpeed = 800.0f;
 	float move{};
+
+	long long dt_lt = 0;
+	float deltaTime = 0.0f;
 };
 

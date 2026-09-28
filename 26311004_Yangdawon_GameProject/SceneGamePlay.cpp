@@ -20,6 +20,7 @@ int SceneGamePlay::Init()
 }
 int SceneGamePlay::Update(CApplication& cApp)
 {
+	player->DeltaTime();
 	// ESC
 	if (pKeyboard[VK_ESCAPE] == EINPUT_DOWN)
 	{
@@ -28,8 +29,7 @@ int SceneGamePlay::Update(CApplication& cApp)
 
 	if (_isInputEsc)
 	{
-		if(g2_GetMouseEvent(0) == EINPUT_DOWN)
-			printf("Mouse: %d, %d \n", g2_GetMouseX(), g2_GetMouseY());
+		g2_SoundStop(texture.battleSound);
 		if (cApp.InputMouse(gameReplayPos) == TRUE)
 		{
 			printf("재시작 선택\n");
@@ -53,18 +53,17 @@ int SceneGamePlay::Update(CApplication& cApp)
 		return 0;
 	}
 
+	g2_SoundPlay(texture.battleSound, true);
 
-
-	if (!g2_SoundIsPlaying(texture.battleSound))
-		g2_SoundPlay(texture.battleSound);
 	//커서이동
-	player->CursorMOve();
+	player->CursorMOve(player->GetDeltaTime());
 	
 	// 스페이스 입력 받았을 시 공격 로직 시작
 	if (InputSpace()&& !g2_SoundIsPlaying(texture.attackSound))
 	{
-		Battle();
-		if (player->Die() || enemy->Die())
+		Battle(enemy);
+
+		if (player->Die() || (enemy->GetStage() == 4 && enemy->Die()))
 		{
 			cApp.Outcome(_isWin);
 			// 씬 전환
@@ -90,19 +89,19 @@ int SceneGamePlay::Render()
 	g2_Draw2D(texture.cursorTexture, NULL, &player->cursorPosition);
 
 	//조건따른 몬스터 그리기
-	// . . .
-	enemyPos = enemy->GetPos();
-	g2_Draw2D(texture.slimeTexture, NULL, &enemyPos);
+	ChangeEnemy(enemy);	
 
 	//hp바 표시
-	g2_FontDrawText(hpBar, playerHp, 0xFFFFFFFF, "HP : %d", player->GetHP());
-	g2_FontDrawText(hpBar, enemyHp, 0xFFFFFFFF, "%d / %d", enemy->GetHp(), enemy->GetMaxHp());
-	
+	g2_FontDrawText(combatFont, playerHp, 0xFFFFFFFF, "HP : %d", player->GetHP());
+	g2_FontDrawText(combatFont, enemy->GetStage()!=4 ? enemyHp : bossHp, 0xFFFFFFFF
+		, "%d / %d", enemy->GetHp(), enemy->GetMaxHp());
+	//라운드 표시
+	g2_FontDrawText(combatFont, stagePos, 0xFFFFFFFF, "STAGE %d / %d", enemy->GetStage(), enemy->GetMaxStage());
 	// 나가기
 	if (_isInputEsc)
 	{		
 		//검은 창
-		g2_Draw2D(texture.escwindowTexture, NULL, &escScreen);
+		g2_Draw2D(texture.escwindowTexture, NULL, &escScreenPos);
 		//다시시작
 		g2_FontDrawText(escButton, gameReplayPos, 0xFFFFFFFF, "다시 하기");
 		//게임 종료
@@ -141,29 +140,25 @@ bool SceneGamePlay::InputSpace()
 	}
 	return FALSE;
 }
-void SceneGamePlay::Battle()
+
+void SceneGamePlay::Battle(Enemy* _enemy)
 {
 	//공격사운드 재생 및 판정결과출력
 	g2_SoundPlay(texture.attackSound);
-	player->Attack(s_cursorX, *enemy);
-	printf("적의 남은 체력 : %d\n", enemy->GetHp());
+	player->Attack(s_cursorX, *_enemy);
+	printf("적의 남은 체력 : %d\n", _enemy->GetHp());
 	
 	//적이 죽었을 경우
-	if (enemy->Die())
+	if (_enemy->Die())
 	{
-		//적제거
-		
-		//다음 라운드 적 생성
-		//플레이어 수치 초기화
+		//적제거, 다음 라운드 적 생성, 플레이어 수치 초기화, 보스 처치 시 클리어
+		ChangeStage(_enemy);
 		printf("적을 처치했다");
-
-		//보스를 죽일시
-		_isWin = true;
 		return;
 	}
 
 	//피격 사운드 재생 및 HP바 색깔 빨간색으로	
-	enemy->Attack(*player);
+	_enemy->Attack(*player);
 	printf("플레이어의 남은 체력 : %d\n", player->GetHP());
 
 	//플레이어가 죽었을 경우
@@ -173,7 +168,70 @@ void SceneGamePlay::Battle()
 		_isWin = false;
 		return;
 	}
+}
+void SceneGamePlay::ChangeStage(Enemy* _enemy)
+{
+	stage = _enemy->GetStage();
+	delete(_enemy);
+	nextStage = stage + 1;
 
+	switch (nextStage)
+	{
+	case(2):
+		enemy = new Goblin;
+		player->SetHP(5);
+		player->SetSpeed(1000);
+		DelayTime();
+		break;
+
+	case(3):
+		enemy = new Orc;
+		player->SetHP(5);
+		player->SetSpeed(1300);
+		break;
+
+	case(4):
+		enemy = new Dragon;
+		player->SetHP(5);
+		player->SetSpeed(1600);
+		break;
+		
+	case(5):
+		BossClear();
+		break;
+	default:
+		break;
+	}	
+}
+void SceneGamePlay::BossClear()
+{
+	_isWin = true;
+}
+void SceneGamePlay::ChangeEnemy(Enemy* _enemy)
+{
+	stage = _enemy->GetStage();
+	enemyPos = _enemy->GetPos();
+
+	switch (stage)
+	{
+	case(1):
+		g2_Draw2D(texture.slimeTexture, NULL, &enemyPos);
+		break;
+
+	case(2):		
+		g2_Draw2D(texture.goblinTexture, NULL, &enemyPos);
+		break;
+
+	case(3):
+		g2_Draw2D(texture.orcTexture, NULL, &enemyPos);
+		break;
+
+	case(4):
+		g2_Draw2D(texture.dragonTexture, NULL, &enemyPos);
+
+	default:
+		break;
+	}
 
 }
 void SceneGamePlay::TextureLoad()
@@ -190,7 +248,7 @@ void SceneGamePlay::TextureLoad()
 	texture.dragonTexture = g2_TextureLoad(TX_DRAGON);
 
 	//문자열
-	hpBar = g2_FontCreate("굴림", 50, 0);
+	combatFont = g2_FontCreate("굴림", 50, 0);
 	attackFont = g2_FontCreate("굴림", 70, 1);
 	escButton = g2_FontCreate("굴림", 50, 0);
 
@@ -216,4 +274,18 @@ void SceneGamePlay::TextureRelease()
 	g2_SoundRelease(texture.battleSound);
 	g2_SoundRelease(texture.attackSound);
 	g2_SoundRelease(texture.damageSound);
+}
+void SceneGamePlay::DelayTime()
+{
+	count += player->GetDeltaTime();
+
+	while (count < 1.0f)
+	{
+		if (count < 1) printf("%f초\n", count);
+		else if (count < 2) printf("%f초\n", count);
+		continue;
+	}
+	printf("반복끝");
+	count = 0.0f;
+	return;
 }

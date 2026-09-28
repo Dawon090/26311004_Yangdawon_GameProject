@@ -26,9 +26,9 @@ bool Player::Die()
 }
 
 
-void Player::CursorMOve()
+void Player::CursorMOve(float _dt)
 {
-	move = cursorSpeed * cursorDirection;
+	move = cursorSpeed * cursorDirection * _dt;
 	cursorX += move; //방향과 이속만큼
 	cursorPosition.x = cursorX;
 	if (cursorX >= gaugeRightX)
@@ -44,7 +44,20 @@ void Player::CursorMOve()
 		cursorDirection = 1;
 	}
 }
+void Player::DeltaTime()
+{
+	long long now = g2_TimeGetTime();
+	if (dt_lt == 0) dt_lt = now;
+	long long diff = now - dt_lt;
+	dt_lt = now;
+	float dt = (float)diff / 1000.0f;
 
+	deltaTime = (dt < 0) ? 0.0 : ((dt > 0.05f) ? 0.05f : dt);
+}
+float Player::GetDeltaTime() const
+{
+	return deltaTime;
+}
 int Player::GetHP() const
 {
 	return currentHp;
@@ -96,4 +109,8 @@ void Player::SetHP(int max)
 {
 	maxHp = max;
 	currentHp = maxHp;
+}
+void Player::SetSpeed(float speed)
+{
+	cursorSpeed = speed;
 }

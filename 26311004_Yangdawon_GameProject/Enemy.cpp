@@ -28,6 +28,14 @@ VEC2 Enemy::GetPos() const
 	return spawnPos;
 }
 
+int Enemy::GetStage() const
+{
+	return stage;
+}
+int Enemy::GetMaxStage() const
+{
+	return maxStage;
+}
 void Enemy::Attack(Player& target)
 {
 	target.TakeDamage(attack);
@@ -50,7 +58,37 @@ bool Enemy::Die()
 
 Slime::Slime()
 {
-	hp = 10;
-	maxHp = 10;
+	hp = 7;
+	maxHp = 7;
 	attack = 1;
+	stage = 1;
+	printf("슬라임 소환");
+}
+
+Goblin::Goblin()
+{
+	hp = 2;
+	maxHp = 2;
+	attack = 1;
+	stage = 2;
+	printf("고블린 소환");
+}
+
+Orc::Orc()
+{
+	hp = 2;
+	maxHp = 2;
+	attack = 1;
+	stage = 3;
+	printf("오크 소환");
+}
+Dragon::Dragon()
+{
+	hp = 35;
+	maxHp = 35;
+	attack = 2;
+	stage = 4;
+	printf("드래곤 소환");
+
+	spawnPos = {448.0f, 130.0f};
 }
