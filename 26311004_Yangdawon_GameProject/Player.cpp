@@ -72,7 +72,6 @@ int Player::GetAttack() const
 {
 	return attack;
 }
-
 float Player::MissRange(float x) const
 {
 	return (x >= 295 && x < 404) || (x >= 876 && x < 985);

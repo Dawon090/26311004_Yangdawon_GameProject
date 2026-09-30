@@ -121,9 +121,9 @@ ScreenState CApplication::GetScene() const
 	return currentScene;
 }
 
-void CApplication::Outcome(bool rel)
+void CApplication::Outcome(bool rel, float time)
 {
-	sceneResult.SetOutcome(rel);
+	sceneResult.SetOutcome(rel, time);
 	return;
 }
 bool CApplication::InputMouse(RECT button)

@@ -17,6 +17,8 @@ public:
 	void SetHP(int max);
 	void SetSpeed(float speed);
 
+	float MissRange(float x) const;
+
 	const VEC2 gaugePosition{ 290.0f,640.0f };
 	VEC2 cursorPosition{ 290.0f,606.0f };
 
@@ -36,7 +38,6 @@ private:
 	float gaugeLeftX = 295.0f;
 
 	//게이지 색상별 범위
-	float MissRange(float x) const;
 	float NormalRange(float x) const;
 	float GoodRange(float x) const;
 	float PerfectRange(float x) const;

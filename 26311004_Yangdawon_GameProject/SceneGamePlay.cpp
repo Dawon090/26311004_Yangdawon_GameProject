@@ -15,6 +15,8 @@ int SceneGamePlay::Init()
 	pKeyboard = g2_GetKeyboard();
 	printf("생성됨");
 	TextureLoad();
+	_playTime = 0.0f;
+	_isWin = false;
 
 	return 0;
 }
@@ -54,18 +56,19 @@ int SceneGamePlay::Update(CApplication& cApp)
 	}
 
 	g2_SoundPlay(texture.battleSound, true);
+	_playTime += player->GetDeltaTime();
 
 	//커서이동
 	player->CursorMOve(player->GetDeltaTime());
 	
 	// 스페이스 입력 받았을 시 공격 로직 시작
 	if (InputSpace()&& !g2_SoundIsPlaying(texture.attackSound))
-	{
-		Battle(enemy);
+	{		
+		CombatManager(enemy);
 
-		if (player->Die() || (enemy->GetStage() == 4 && enemy->Die()))
+		if (player->Die() || _isWin)
 		{
-			cApp.Outcome(_isWin);
+			cApp.Outcome(_isWin, _playTime);
 			// 씬 전환
 			printf("%d\n", cApp.GetScene());
 			cApp.ChangeScene(GAMEOVER);
@@ -153,18 +156,17 @@ void SceneGamePlay::Battle(Enemy* _enemy)
 	{
 		//적제거, 다음 라운드 적 생성, 플레이어 수치 초기화, 보스 처치 시 클리어
 		ChangeStage(_enemy);
-		printf("적을 처치했다");
+		printf("적을 처치했다\n");
 		return;
 	}
 
-	//피격 사운드 재생 및 HP바 색깔 빨간색으로	
 	_enemy->Attack(*player);
 	printf("플레이어의 남은 체력 : %d\n", player->GetHP());
 
 	//플레이어가 죽었을 경우
 	if (player->Die())
 	{
-		printf("플레이어가 사망했습니다");
+		printf("플레이어가 사망했습니다\n");
 		_isWin = false;
 		return;
 	}
@@ -172,25 +174,26 @@ void SceneGamePlay::Battle(Enemy* _enemy)
 void SceneGamePlay::ChangeStage(Enemy* _enemy)
 {
 	stage = _enemy->GetStage();
-	delete(_enemy);
 	nextStage = stage + 1;
 
 	switch (nextStage)
 	{
 	case(2):
+		delete(_enemy);
 		enemy = new Goblin;
 		player->SetHP(5);
 		player->SetSpeed(1000);
-		DelayTime();
 		break;
 
 	case(3):
+		delete(_enemy);
 		enemy = new Orc;
 		player->SetHP(5);
 		player->SetSpeed(1300);
 		break;
 
 	case(4):
+		delete(_enemy);
 		enemy = new Dragon;
 		player->SetHP(5);
 		player->SetSpeed(1600);
@@ -206,6 +209,49 @@ void SceneGamePlay::ChangeStage(Enemy* _enemy)
 void SceneGamePlay::BossClear()
 {
 	_isWin = true;
+}
+void SceneGamePlay::BossCombat(Enemy* _enemy)
+{
+	if (_enemy->GetHp() <= 25 && _enemy->GetHp() > 15) player->SetSpeed(1800);
+	else if (_enemy->GetHp() <= 15 && _enemy->GetHp() > 5) player->SetSpeed(2000);
+	else if (_enemy->GetHp() <= 5) player->SetSpeed(2500);
+
+	if (!player->MissRange(s_cursorX))
+	{
+		g2_SoundPlay(texture.attackSound);
+		player->Attack(s_cursorX, *_enemy);
+		printf("적의 남은 체력 : %d\n", _enemy->GetHp());
+
+		//적이 죽었을 경우
+		if (_enemy->Die())
+		{
+			//적제거, 다음 라운드 적 생성, 플레이어 수치 초기화, 보스 처치 시 클리어
+			ChangeStage(_enemy);
+			printf("적을 처치했다\n");
+			return;
+		}
+	}
+	else
+	{
+		g2_SoundPlay(texture.damageSound);
+		printf("공격 미스\n");
+
+		_enemy->Attack(*player);
+		printf("플레이어의 남은 체력 : %d\n", player->GetHP());
+	
+		//플레이어가 죽었을 경우
+		if (player->Die())
+		{
+			printf("플레이어가 사망했습니다\n");
+			_isWin = false;
+			return;
+		}
+	}
+}
+void SceneGamePlay::CombatManager(Enemy* _enemy)
+{
+	if (_enemy->GetStage() != 4) Battle(_enemy);
+	else BossCombat(_enemy);
 }
 void SceneGamePlay::ChangeEnemy(Enemy* _enemy)
 {
@@ -274,18 +320,4 @@ void SceneGamePlay::TextureRelease()
 	g2_SoundRelease(texture.battleSound);
 	g2_SoundRelease(texture.attackSound);
 	g2_SoundRelease(texture.damageSound);
-}
-void SceneGamePlay::DelayTime()
-{
-	count += player->GetDeltaTime();
-
-	while (count < 1.0f)
-	{
-		if (count < 1) printf("%f초\n", count);
-		else if (count < 2) printf("%f초\n", count);
-		continue;
-	}
-	printf("반복끝");
-	count = 0.0f;
-	return;
 }

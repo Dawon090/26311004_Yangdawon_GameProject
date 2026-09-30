@@ -7,8 +7,7 @@
 int SceneGameResult::Init()
 {
 	resultText = g2_FontCreate("±¼¸²", 70, 0);
-	exitText = g2_FontCreate("±¼¸²", 50, 0);
-	replayText = g2_FontCreate("±¼¸²", 50, 0);
+	gameText = g2_FontCreate("±¼¸²", 50, 0);
 
 	texture.loseSound = g2_SoundLoad(VFX_LOSE);
 	texture.winSound = g2_SoundLoad(VFX_WIN);
@@ -51,8 +50,9 @@ int SceneGameResult::Render()
 {
 	
 	g2_FontDrawText(resultText, resultPos, 0xFFFFFFFF, _isWin ? "WIN" : "LOSE");
-	g2_FontDrawText(exitText, exitPos, 0xFFFFFFFF, "EXIT");
-	g2_FontDrawText(replayText, replayPos, 0xFFFFFFFF, "REPLAY");
+	g2_FontDrawText(gameText, exitPos, 0xFFFFFFFF, "EXIT");
+	g2_FontDrawText(gameText, replayPos, 0xFFFFFFFF, "REPLAY");
+	g2_FontDrawText(gameText, timePos, 0xFFFFFFFF, "PLAY TIME : %.4f", _time);
 
 	return 0;
 }
@@ -65,9 +65,10 @@ int SceneGameResult::Destroy()
 	return 0;
 }
 
-void SceneGameResult::SetOutcome(bool outcome)
+void SceneGameResult::SetOutcome(bool outcome, float playtime)
 {
 	_isWin = outcome;
+	_time = playtime;
 	return;
 }
 

@@ -67,8 +67,8 @@ Slime::Slime()
 
 Goblin::Goblin()
 {
-	hp = 2;
-	maxHp = 2;
+	hp = 12;
+	maxHp = 12;
 	attack = 1;
 	stage = 2;
 	printf("고블린 소환");
@@ -76,8 +76,8 @@ Goblin::Goblin()
 
 Orc::Orc()
 {
-	hp = 2;
-	maxHp = 2;
+	hp = 17;
+	maxHp = 17;
 	attack = 1;
 	stage = 3;
 	printf("오크 소환");

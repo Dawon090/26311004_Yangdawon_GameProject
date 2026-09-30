@@ -18,11 +18,11 @@ private:
 	void Battle(Enemy* _enemy);
 	void ChangeStage(Enemy* _enemy);
 	void ChangeEnemy(Enemy* _enemy);
-	void BossCombat();
+	void BossCombat(Enemy* _enemy);
+	void CombatManager(Enemy* _enemy);
 	void BossClear();
 	void TextureLoad();
 	void TextureRelease();
-	void DelayTime();
 
 
 	Player* player = nullptr;
@@ -53,6 +53,6 @@ private:
 	RECT gameReplayPos{ 540,290,760,340 };
 	bool _isInputEsc = false;
 
-	float count = 0;
+	float count = 0.0f;
 	float _playTime{};
 };

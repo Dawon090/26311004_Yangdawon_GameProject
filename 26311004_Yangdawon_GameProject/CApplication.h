@@ -45,7 +45,7 @@ public:
 	void ChangeRender();
 
 	ScreenState GetScene() const;
-	void Outcome(bool rel);
+	void Outcome(bool rel, float time);
 	bool InputMouse(RECT button);
 
 protected:
