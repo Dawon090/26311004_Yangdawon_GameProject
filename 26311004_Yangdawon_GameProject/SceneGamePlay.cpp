@@ -2,8 +2,6 @@
 #include "glc2d.h"
 #include "TexturePath.h"
 #include "CApplication.h"
-#include "Enemy.h"
-#include "Player.h"
 
 #include "stdio.h"
 
@@ -182,21 +180,21 @@ void SceneGamePlay::ChangeStage(Enemy* _enemy)
 		delete(_enemy);
 		enemy = new Goblin;
 		player->SetHP(5);
-		player->SetSpeed(1000);
+		player->SetSpeed(1200);
 		break;
 
 	case(3):
 		delete(_enemy);
 		enemy = new Orc;
 		player->SetHP(5);
-		player->SetSpeed(1300);
+		player->SetSpeed(1500);
 		break;
 
 	case(4):
 		delete(_enemy);
 		enemy = new Dragon;
 		player->SetHP(5);
-		player->SetSpeed(1600);
+		player->SetSpeed(1800);
 		break;
 		
 	case(5):
@@ -212,9 +210,9 @@ void SceneGamePlay::BossClear()
 }
 void SceneGamePlay::BossCombat(Enemy* _enemy)
 {
-	if (_enemy->GetHp() <= 25 && _enemy->GetHp() > 15) player->SetSpeed(1800);
-	else if (_enemy->GetHp() <= 15 && _enemy->GetHp() > 5) player->SetSpeed(2000);
-	else if (_enemy->GetHp() <= 5) player->SetSpeed(2500);
+	if (_enemy->GetHp() <= 25 && _enemy->GetHp() > 15) player->SetSpeed(2100);
+	else if (_enemy->GetHp() <= 15 && _enemy->GetHp() > 5) player->SetSpeed(2500);
+	else if (_enemy->GetHp() <= 5) player->SetSpeed(3000);
 
 	if (!player->MissRange(s_cursorX))
 	{
@@ -247,6 +245,10 @@ void SceneGamePlay::BossCombat(Enemy* _enemy)
 			return;
 		}
 	}
+}
+void SceneGamePlay::EnemyTakeDamage(Enemy* _enemy)
+{
+	//데미지 받을 시 좌우 흔들
 }
 void SceneGamePlay::CombatManager(Enemy* _enemy)
 {

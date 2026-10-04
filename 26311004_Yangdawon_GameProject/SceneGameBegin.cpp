@@ -1,5 +1,4 @@
 #include "SceneGameBegin.h"
-#include "glc2d.h"
 #include "TexturePath.h"
 #include "CApplication.h"
 

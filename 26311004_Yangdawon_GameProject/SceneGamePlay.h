@@ -21,6 +21,7 @@ private:
 	void BossCombat(Enemy* _enemy);
 	void CombatManager(Enemy* _enemy);
 	void BossClear();
+	void EnemyTakeDamage(Enemy* _enemy);
 	void TextureLoad();
 	void TextureRelease();
 
